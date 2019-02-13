@@ -17,6 +17,10 @@ spec:
     spec:
       containers:
       - image: timonwong/prometheus-webhook-dingtalk
+        arg: 
+        #如果要设置不同的钉钉机器人webhook就再增加一行
+        - --ding.profile="ops_dingding=https://oapi.dingtalk.com/robot/send?access_token=钉钉机器人webhook1"
+        #- --ding.profile="ops_dingding=https://oapi.dingtalk.com/robot/send?access_token=钉钉机器人webhook2"
         name: dd-webhook
         ports:
         - containerPort: 8060
