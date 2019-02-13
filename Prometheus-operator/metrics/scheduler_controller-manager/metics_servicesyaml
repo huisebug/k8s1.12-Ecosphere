@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: kube-scheduler
+  namespace: kube-system
+  labels:
+    k8s-app: kube-scheduler
+subsets:
+- addresses:
+  - ip: 192.168.137.10
+  - ip: 192.168.137.11
+  - ip: 192.168.137.12
+  ports:
+  - name: http-metrics
+    port: 10251
+    protocol: TCP
+    
+---
+
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: kube-controller-manager
+  namespace: kube-system
+  labels:
+    k8s-app: kube-controller-manager
+subsets:
+- addresses:
+  - ip: 192.168.137.10
+  - ip: 192.168.137.11
+  - ip: 192.168.137.12
+  ports:
+  - name: http-metrics
+    port: 10252
+    protocol: TCP
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: kube-system
+  name: kube-controller-manager
+  labels:
+    k8s-app: kube-controller-manager
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  - name: http-metrics
+    port: 10252
+    targetPort: 10252
+    protocol: TCP
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: kube-system
+  name: kube-scheduler
+  labels:
+    k8s-app: kube-scheduler
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  - name: http-metrics
+    port: 10251
+    targetPort: 10251
+    protocol: TCP
