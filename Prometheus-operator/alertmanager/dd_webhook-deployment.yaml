@@ -2,22 +2,22 @@ apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
   labels:
-    app: dd_webhook
-  name: dd_webhook
+    app: dd-webhook
+  name: dd-webhook
   namespace: monitoring
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: dd_webhook
+      app: dd-webhook
   template:
     metadata:
       labels:
-        app: dd_webhook
+        app: dd-webhook
     spec:
       containers:
       - image: timonwong/prometheus-webhook-dingtalk
-        name: dd_webhook
+        name: dd-webhook
         ports:
         - containerPort: 8060
           name: http
@@ -35,8 +35,8 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: dd_webhook
-  name: dd_webhook
+    app: dd-webhook
+  name: dd-webhook
   namespace: monitoring
 spec:
   ports:
@@ -44,5 +44,5 @@ spec:
     port: 8060
     targetPort: http
   selector:
-    app: dd_webhook
+    app: dd-webhook
 
