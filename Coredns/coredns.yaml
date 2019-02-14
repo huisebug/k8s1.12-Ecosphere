@@ -4,7 +4,7 @@ metadata:
   name: coredns
   namespace: kube-system
 ---
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   labels:
@@ -21,8 +21,14 @@ rules:
   verbs:
   - list
   - watch
+- apiGroups:
+  - ""
+  resources:
+  - nodes
+  verbs:
+  - get
 ---
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   annotations:
@@ -49,19 +55,20 @@ data:
     .:53 {
         errors
         health
-        kubernetes cluster.local in-addr.arpa ip6.arpa {
+        kubernetes cluster.local 10.254.0.0/16 {
           pods insecure
           upstream
           fallthrough in-addr.arpa ip6.arpa
         }
         prometheus :9153
-        proxy . /etc/resolv.conf
+        forward . /etc/resolv.conf
         cache 30
+        loop
         reload
         loadbalance
     }
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: coredns
@@ -80,32 +87,30 @@ spec:
       k8s-app: kube-dns
   template:
     metadata:
-      annotations:
-        scheduler.alpha.kubernetes.io/critical-pod: ""
       labels:
         k8s-app: kube-dns
     spec:
       serviceAccountName: coredns
-      priorityClassName: system-cluster-critical
       tolerations:
-      - key: CriticalAddonsOnly
-        operator: Exists
-      - effect: NoSchedule
-        key: node-role.kubernetes.io/master
+        - key: "CriticalAddonsOnly"
+          operator: "Exists"
+      nodeSelector:
+        beta.kubernetes.io/os: linux
       containers:
       - name: coredns
-        image: coredns/coredns:1.2.0
+        image: coredns/coredns:1.3.1
         imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            memory: 170Mi
+          requests:
+            cpu: 100m
+            memory: 70Mi
         args: [ "-conf", "/etc/coredns/Corefile" ]
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 8080
-            scheme: HTTP
-          initialDelaySeconds: 60
-          timeoutSeconds: 10
-          successThreshold: 1
-          failureThreshold: 5
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/coredns
+          readOnly: true
         ports:
         - containerPort: 53
           name: dns
@@ -116,12 +121,6 @@ spec:
         - containerPort: 9153
           name: metrics
           protocol: TCP
-        resources:
-          limits:
-            memory: 200Mi
-          requests:
-            cpu: 100m
-            memory: 70Mi
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
@@ -130,23 +129,28 @@ spec:
             drop:
             - all
           readOnlyRootFilesystem: true
-        volumeMounts:
-        - name: config-volume
-          mountPath: /etc/coredns
-          readOnly: true
-        - name: host-time
-          mountPath: /etc/localtime
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 60
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 5
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+            scheme: HTTP
       dnsPolicy: Default
       volumes:
-      - name: host-time
-        hostPath:
-          path: /etc/localtime
-      - name: config-volume
-        configMap:
-          name: coredns
-          items:
-          - key: Corefile
-            path: Corefile
+        - name: config-volume
+          configMap:
+            name: coredns
+            items:
+            - key: Corefile
+              path: Corefile
 ---
 apiVersion: v1
 kind: Service
