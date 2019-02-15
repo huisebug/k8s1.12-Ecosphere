@@ -15,6 +15,9 @@ spec:
       labels:
         app: dd-webhook
     spec:
+      hostNetwork: true
+      nodeSelector:
+        kubernetes.io/hostname: api.huisebug.com
       containers:
       - image: timonwong/prometheus-webhook-dingtalk
         args: 
@@ -33,20 +36,5 @@ spec:
             cpu: 100m
             memory: 100Mi
             
----
 
-apiVersion: v1
-kind: Service
-metadata:
-  labels:
-    app: dd-webhook
-  name: dd-webhook
-  namespace: monitoring
-spec:
-  ports:
-  - name: http
-    port: 8060
-    targetPort: http
-  selector:
-    app: dd-webhook
 
