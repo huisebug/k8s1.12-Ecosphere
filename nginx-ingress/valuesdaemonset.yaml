@@ -139,13 +139,13 @@ controller:
 
   minAvailable: 1
 
-  resources: {}
-  #  limits:
-  #    cpu: 100m
-  #    memory: 64Mi
-  #  requests:
-  #    cpu: 100m
-  #    memory: 64Mi
+  resources: 
+    limits:
+      cpu: 1000m
+      memory: 1024Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
 
   autoscaling:
     enabled: false
@@ -186,7 +186,7 @@ controller:
       http: http
       https: https
 
-    type: LoadBalancer
+    type: ClusterIP
 
     # type: NodePort
     # nodePorts:
@@ -386,5 +386,5 @@ tcp: {}
 # UDP service key:value pairs
 # Ref: https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx/examples/udp
 ##
-udp: {}
-#  53: "kube-system/kube-dns:53"
+udp:
+  53: "kube-system/kube-dns:53"
