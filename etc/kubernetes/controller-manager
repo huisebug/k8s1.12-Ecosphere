@@ -1,0 +1,12 @@
+KUBE_CONTROLLER_MANAGER_ARGS="--address=0.0.0.0 \
+    --allocate-node-cidrs=true \
+    --cluster-cidr=10.10.0.0/16 \
+    --cluster-signing-cert-file=/etc/kubernetes/ssl/ca.pem \
+    --cluster-signing-key-file=/etc/kubernetes/ssl/ca-key.pem  \
+    --controllers=*,bootstrapsigner,tokencleaner \
+    --kubeconfig=/etc/kubernetes/kube-controller-manager.kubeconfig \
+    --leader-elect=true \
+    --node-cidr-mask-size=24 \
+    --root-ca-file=/etc/kubernetes/ssl/ca.pem \
+    --service-account-private-key-file=/etc/kubernetes/ssl/ca-key.pem \
+    --use-service-account-credentials=true "
