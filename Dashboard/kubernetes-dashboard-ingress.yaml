@@ -1,0 +1,15 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  labels:
+    app: kubernetes-dashboard
+  name: kubernetes-dashboard
+  namespace: kube-system
+spec:
+  rules:
+  - host: kubernetes-dashboard.huisebug.com
+    https:
+      paths:
+      - backend:
+          serviceName: kubernetes-dashboard
+          servicePort: 443
