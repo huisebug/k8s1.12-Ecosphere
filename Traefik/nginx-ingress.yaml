@@ -1,0 +1,14 @@
+apiVersion extensionsv1beta1
+kind Ingress
+metadata
+  labels
+    app nginx-deployment
+  name nginx-deployment
+spec
+  rules
+  - host nginx-deployment.huisebug.com
+    http
+      paths
+      - backend
+          serviceName nginx-deployment
+          servicePort 80
