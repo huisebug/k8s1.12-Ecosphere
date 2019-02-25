@@ -1,0 +1,14 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: sample-metrics-app
+spec:
+  rules:
+    - host: sample-metrics-app.huisebug.com
+      http:
+        paths:
+          - backend:
+              serviceName: sample-metrics-app
+              servicePort: 80
+            path: /
+
