@@ -233,7 +233,7 @@ spec:
             # no effect. This should fall within `--cluster-cidr`.
             #修改为跟你在kube-controller-manager中配置的CID一致。
             - name: CALICO_IPV4POOL_CIDR
-              value: "10.254.0.0/16"
+              value: "10.10.0.0/16"
             # Enable IPIP
             - name: CALICO_IPV4POOL_IPIP
               value: "Always"
