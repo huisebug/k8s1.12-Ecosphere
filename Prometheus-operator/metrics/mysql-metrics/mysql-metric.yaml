@@ -24,11 +24,11 @@ spec:
           value: "mysql"
         resources:
           requests:
-            cpu: 10m
-            memory: 100Mi
+            cpu: 25m
+            memory: 500Mi
           limits:
             cpu: 100m
-            memory: 800Mi
+            memory: 1000Mi
     
 
 ---
