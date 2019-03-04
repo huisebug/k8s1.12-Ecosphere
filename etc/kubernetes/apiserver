@@ -2,7 +2,9 @@ KUBE_API_ARGS="--advertise-address=192.168.137.10 \
     --allow-privileged=true \
     --client-ca-file=/etc/kubernetes/ssl/ca.pem \
     --disable-admission-plugins=PersistentVolumeLabel \
-    --enable-admission-plugins=NodeRestriction \
+--enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,ResourceQuota,NodeRestriction \
+--authorization-mode=RBAC,Node \
+--token-auth-file=/etc/kubernetes/token.csv \
     --enable-bootstrap-token-auth=true \
     --etcd-cafile=/etc/kubernetes/ssl/ca.pem \
     --etcd-certfile=/etc/kubernetes/ssl/kubernetes.pem \
@@ -33,4 +35,5 @@ KUBE_API_ARGS="--advertise-address=192.168.137.10 \
      --audit-policy-file=/etc/kubernetes/audit-policy.yml  \
      --experimental-encryption-provider-config=/etc/kubernetes/encryption.yaml  \
      --event-ttl=1h"
+
 
