@@ -13,7 +13,8 @@ authorization:
   webhook:
     cacheAuthorizedTTL: 5m0s
     cacheUnauthorizedTTL: 30s
-cgroupDriver: cgroupfs
+#指定驱动，需要与docker一致，使用docker info即可查看到
+cgroupDriver: systemd
 cgroupsPerQOS: true
 #指定集群的DNS服务器
 clusterDNS:
